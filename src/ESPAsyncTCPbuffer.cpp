@@ -386,7 +386,11 @@ void AsyncTCPbuffer::_sendBuffer() {
  * @param len
  */
 void AsyncTCPbuffer::_rxData(uint8_t *buf, size_t len) {
-    if(!_client || !_client->connected()) {
+    /*if(!_client || !_client->connected()) {
+        DEBUG_ASYNC_TCP("[A-TCP] not connected!\n");
+        return;
+    }*/
+    if(!_client) {
         DEBUG_ASYNC_TCP("[A-TCP] not connected!\n");
         return;
     }
@@ -447,7 +451,10 @@ void AsyncTCPbuffer::_rxData(uint8_t *buf, size_t len) {
  *
  */
 size_t AsyncTCPbuffer::_handleRxBuffer(uint8_t *buf, size_t len) {
-    if(!_client || !_client->connected() || _RXbuffer == NULL) {
+    /*if(!_client || !_client->connected() || _RXbuffer == NULL) {
+        return 0;
+    }*/
+    if(!_client || _RXbuffer == NULL) {
         return 0;
     }
 
@@ -471,6 +478,8 @@ size_t AsyncTCPbuffer::_handleRxBuffer(uint8_t *buf, size_t len) {
             _RXbuffer->peek((char *) b, BufferAvailable);
             r = _cbRX(b, BufferAvailable);
             _RXbuffer->remove(r);
+
+            delete[] b;
         }
 
         if(r == BufferAvailable && buf && (len > 0)) {
